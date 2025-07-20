@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="A tool to encrypt and decrypt any static content using passkeys.">
+  <meta property="og:title" content="static-encrypt-passkey">
+  <meta property="og:description" content="A tool to encrypt and decrypt any static content using passkeys.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://static-encrypt-passkey.ardis.lu/">
+  <link rel="canonical" href="https://static-encrypt-passkey.ardis.lu/">
+  <link rel="icon" href="data:,">
+  <title>static-encrypt-passkey</title>
+  <link href="./style.css" rel="stylesheet">
+</head>
+
+<body>
+  <header>
+    <h1>static-encrypt-passkey</h1>
+    <p>Encrypt and decrypt any static content using a passkey.</p>
+    <p>Use <a href="https://static-encrypt.ardis.lu/">static-encrypt</a> if you want to use a password instead of a passkey.</p>
+    <p>See the <a href="https://github.com/ardislu/static-encrypt-passkey">GitHub repository</a> for more information.</p>
+  </header>
+
+  <main>
+    <h2>Encrypt</h2>
+    <form id="encrypt">
+      <label for="ec">Content</label>
+      <textarea name="content" id="ec" placeholder="Hello, world!" required></textarea>
+      <button>Encrypt with passkey</button>
+      <label for="eo">Encrypted content</label>
+      <output name="output" id="eo" for="ec"></output>
+    </form>
+
+    <h2>Decrypt</h2>
+    <form id="decrypt">
+      <label for="dc">Encrypted content</label>
+      <textarea name="content" id="dc" placeholder="l/b0RwTC..." required></textarea>
+      <button>Decrypt with passkey</button>
+      <label for="do">Content</label>
+      <output name="output" id="do" for="dc"></output>
+    </form>
+  </main>
+
+  <script type="module">
+    import { encrypt, decrypt } from './script.js';
+
+    document.querySelector('main').addEventListener('submit', async e => {
+      e.preventDefault();
+      const { content } = Object.fromEntries(new FormData(e.target));
+      const { output } = e.target.elements;
+      output.textContent = '';
+      let text;
+      try {
+        output.removeAttribute('data-error');
+        text = e.target.id === 'encrypt' ? await encrypt(content) : await decrypt(content);
+      }
+      catch (error) {
+        output.setAttribute('data-error', '');
+        text = error;
+      }
+      output.textContent = text;
+    });
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,91 @@
+* {
+  margin: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: system-ui, sans-serif;
+  place-items: center;
+  background: hsl(216deg 80% 95%);
+}
+
+header {
+  margin: 32px 8px;
+}
+
+header,
+main {
+  inline-size: min(100dvi - 32px, 720px);
+}
+
+header,
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+}
+
+form {
+  position: relative;
+  margin-block-end: 32px;
+
+  &::before {
+    content: "";
+    display: block;
+    position: absolute;
+    inset-block-start: -8px;
+    inset-inline-start: -12px;
+    inline-size: 4px;
+    block-size: calc(100% + 8px);
+    background: hsl(216deg 50% 80%);
+    transition: background-color 400ms;
+  }
+
+  &:focus-within::before {
+    background: hsl(216deg 75% 65%);
+    transition: background-color 200ms;
+  }
+}
+
+label {
+  font-weight: 700;
+}
+
+textarea,
+button,
+output {
+  padding: 4px 6px;
+  border: 1px solid hsl(216deg 50% 60%);
+  border-radius: 4px;
+}
+
+textarea,
+output {
+  min-block-size: 3.5em;
+  block-size: 10em;
+  overflow: auto;
+  resize: vertical;
+}
+
+textarea {
+  font-family: inherit;
+  font-size: inherit;
+  flex: auto;
+}
+
+button {
+  inline-size: fit-content;
+  cursor: pointer;
+  block-size: 32px;
+}
+
+output {
+  white-space: pre-wrap;
+  word-break: break-all;
+  background: hsl(216deg 20% 95%);
+
+  &[data-error] {
+    background: hsl(0deg 50% 80%);
+  }
+}
