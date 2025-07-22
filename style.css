@@ -5,6 +5,7 @@
 
 body {
   font-family: system-ui, sans-serif;
+  display: grid; /** Firefox does not support place-items in flow layout */
   place-items: center;
   background: hsl(216deg 80% 95%);
 }
