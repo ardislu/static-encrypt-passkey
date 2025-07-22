@@ -9,7 +9,7 @@ async function createPrf() {
     publicKey: {
       rp: { name: '' },
       user: { id: new ArrayBuffer(0), name: '', displayName: '' },
-      pubKeyCredParams: [{ type: 'public-key', alg: -7 }],
+      pubKeyCredParams: [{ type: 'public-key', alg: -8 }, { type: 'public-key', alg: -7 }, { type: 'public-key', alg: -257 }],
       extensions: { prf: { eval: { first: new ArrayBuffer(0) } } },
       challenge: new ArrayBuffer(0)
     }
