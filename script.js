@@ -98,8 +98,15 @@ export async function encrypt(plaintext) {
     paddedPlaintext
   ));
 
-  const buffer = Uint8Array.from([...salt, ...iv, ...ciphertext]);
-  const content = btoa(String.fromCharCode(...buffer));
+  const buffer = new Uint8Array(salt.byteLength + iv.byteLength + ciphertext.byteLength);
+  buffer.set(salt);
+  buffer.set(iv, salt.byteLength);
+  buffer.set(ciphertext, salt.byteLength + iv.byteLength);
+  let binary = '';
+  for (let i = 0; i < buffer.byteLength; i++) {
+    binary += String.fromCharCode(buffer[i]);
+  }
+  const content = btoa(binary);
 
   return content;
 }
