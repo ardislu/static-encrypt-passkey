@@ -8,7 +8,7 @@ async function createPrf() {
   return navigator.credentials.create({
     publicKey: {
       rp: { name: '' },
-      user: { id: new ArrayBuffer(0), name: '', displayName: '' },
+      user: { id: new ArrayBuffer(1), name: '', displayName: '' },
       pubKeyCredParams: [{ type: 'public-key', alg: -8 }, { type: 'public-key', alg: -7 }, { type: 'public-key', alg: -257 }],
       extensions: { prf: { eval: { first: new ArrayBuffer(0) } } },
       challenge: new ArrayBuffer(0)
