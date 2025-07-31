@@ -1,5 +1,8 @@
 /**
- * Create a new passkey and get a pseudo-random value produced from the passkey PRF extension.
+ * Create a new resident passkey and get a pseudo-random value produced from the passkey PRF extension.
+ * 
+ * If the passkey does not return a PRF value after creation, try to sign in immediately after passkey creation
+ * and get the PRF value from the sign in flow.
  * @see {@link https://www.w3.org/TR/webauthn-3/#prf-extension}
  * @returns {Promise<ArrayBuffer&{byteLength:32}>} A 32 byte long `ArrayBuffer` containing a pseudo-random
  * value produced from the passkey PRF extension.
@@ -8,12 +11,13 @@ async function createPrf() {
   return navigator.credentials.create({
     publicKey: {
       rp: { name: '' },
-      user: { id: new ArrayBuffer(1), name: '', displayName: '' },
+      user: { id: new ArrayBuffer(1), name: crypto.randomUUID(), displayName: '' }, // Windows Hello requires non-empty id; Yubikey requires non-empty name
       pubKeyCredParams: [{ type: 'public-key', alg: -8 }, { type: 'public-key', alg: -7 }, { type: 'public-key', alg: -257 }],
       extensions: { prf: { eval: { first: new ArrayBuffer(0) } } },
-      challenge: new ArrayBuffer(0)
+      challenge: new ArrayBuffer(0),
+      authenticatorSelection: { residentKey: 'required' } // Resident key is required because there is no server to store c.rawId
     }
-  }).then(c => c.getClientExtensionResults().prf.results.first);
+  }).then(c => c.getClientExtensionResults().prf?.results?.first ?? getPrf()); // Yubikey does not return PRF on creation, workaround is sign in immediately after creation
 }
 
 /**
@@ -91,6 +95,7 @@ export async function encrypt(plaintext) {
   const info = encoder.encode('https://github.com/ardislu/static-encrypt-passkey');
 
   const prf = await createPrf();
+
   const key = await getKey(prf, salt, info);
   const ciphertext = new Uint8Array(await crypto.subtle.encrypt(
     { name: 'AES-GCM', iv },
