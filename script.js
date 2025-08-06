@@ -84,6 +84,7 @@ export async function encrypt(plaintext) {
   // Prepare non-crypto inputs
   const encoder = new TextEncoder();
   const encodedPlaintext = encoder.encode(plaintext);
+  const info = encoder.encode('https://github.com/ardislu/static-encrypt-passkey');
 
   // Pad ciphertext so the final buffer length is a multiple of 3, to remove base64 padding. Not cryptographically
   // significant, just for aesthetics. +16 assumes ciphertext includes a 128 bit AES-GCM authentication tag.
@@ -92,10 +93,7 @@ export async function encrypt(plaintext) {
   paddedPlaintext.set([p]); // Offset to discard on decode
   paddedPlaintext.set(encodedPlaintext, p); // Gap filled with zero bytes, e.g. [3, 0, 0, ...encodedPlaintext]
 
-  const info = encoder.encode('https://github.com/ardislu/static-encrypt-passkey');
-
   const prf = await createPrf();
-
   const key = await getKey(prf, salt, info);
   const ciphertext = new Uint8Array(await crypto.subtle.encrypt(
     { name: 'AES-GCM', iv },

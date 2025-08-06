@@ -51,16 +51,14 @@
       const { content } = Object.fromEntries(new FormData(e.target));
       const { output } = e.target.elements;
       output.textContent = '';
-      let text;
       try {
         output.removeAttribute('data-error');
-        text = e.target.id === 'encrypt' ? await encrypt(content) : await decrypt(content);
+        output.textContent = e.target.id === 'encrypt' ? await encrypt(content) : await decrypt(content);
       }
       catch (error) {
         output.setAttribute('data-error', '');
-        text = error;
+        output.textContent = error;
       }
-      output.textContent = text;
     });
   </script>
 </body>
