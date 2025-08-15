@@ -38,9 +38,9 @@ async function getPrf() {
 
 /**
  * Create a `CryptoKey` from a high-entropy random value using the HKDF algorithm.
- * @param {ArrayBuffer|ArrayBufferView<ArrayBufferLike>} rand A high-entropy random value.
- * @param {ArrayBuffer|ArrayBufferView<ArrayBufferLike>} salt A cryptographic salt value.
- * @param {ArrayBuffer|ArrayBufferView<ArrayBufferLike>} info Additional contextual information.
+ * @param {ArrayBuffer|ArrayBufferView<ArrayBuffer>} rand A high-entropy random value.
+ * @param {ArrayBuffer|ArrayBufferView<ArrayBuffer>} salt A cryptographic salt value.
+ * @param {ArrayBuffer|ArrayBufferView<ArrayBuffer>} info Additional contextual information.
  * @returns {Promise<CryptoKey>} A `CryptoKey` that can be used for `"encrypt"` or `"decrypt"`.
  */
 async function getKey(rand, salt, info) {
