@@ -105,13 +105,8 @@ export async function encrypt(plaintext) {
   buffer.set(salt);
   buffer.set(iv, salt.byteLength);
   buffer.set(ciphertext, salt.byteLength + iv.byteLength);
-  let binary = '';
-  for (let i = 0; i < buffer.byteLength; i++) {
-    binary += String.fromCharCode(buffer[i]);
-  }
-  const content = btoa(binary);
 
-  return content;
+  return buffer.toBase64();
 }
 
 /**
@@ -123,7 +118,7 @@ export async function encrypt(plaintext) {
  */
 export async function decrypt(content) {
   // Extract random values
-  const buffer = Uint8Array.from(atob(content), c => c.charCodeAt(0));
+  const buffer = Uint8Array.fromBase64(content);
   const salt = buffer.slice(0, 64); // For HKDF
   const iv = buffer.slice(64, 76); // For AES-GCM
   const ciphertext = buffer.slice(76);
