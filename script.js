@@ -93,7 +93,9 @@ export async function encrypt(plaintext) {
   paddedPlaintext.set([p]); // Offset to discard on decode
   paddedPlaintext.set(encodedPlaintext, p); // Gap filled with zero bytes, e.g. [3, 0, 0, ...encodedPlaintext]
 
-  const prf = await createPrf();
+  // As per the specification, the PRF extension *should* already return a BufferSource which can be directly
+  // passed to Web Crypto API, however non-standard passkey implementations (e.g., 1Password) return Array.
+  const prf = new Uint8Array(await createPrf());
   const key = await getKey(prf, salt, info);
   const ciphertext = new Uint8Array(await crypto.subtle.encrypt(
     { name: 'AES-GCM', iv },
@@ -126,7 +128,9 @@ export async function decrypt(content) {
   // Prepare non-crypto inputs
   const info = new TextEncoder().encode('https://github.com/ardislu/static-encrypt-passkey');
 
-  const prf = await getPrf();
+  // As per the specification, the PRF extension *should* already return a BufferSource which can be directly
+  // passed to Web Crypto API, however non-standard passkey implementations (e.g., 1Password) return Array.
+  const prf = new Uint8Array(await getPrf());
   const key = await getKey(prf, salt, info);
   const encodedPlaintext = new Uint8Array(await crypto.subtle.decrypt(
     { name: 'AES-GCM', iv },
